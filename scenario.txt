@@ -1,0 +1,74 @@
+##### pre-work
+oc new-project demo-scc
+// scc-user 생성
+oc adm policy add-role-to-user admin scc-user -n demo-scc
+oc login -u scc-user
+oc adm policy remove-scc-from-user restricted-v2 -z default -n demo-scc
+oc adm policy remove-scc-from-user restricted -z default -n demo-scc
+oc adm policy remove-scc-from-user anyuid -z default -n demo-scc
+oc adm policy remove-scc-from-user nonroot-v2 -z default -n demo-scc
+oc adm policy remove-scc-from-user privileged -z default -n demo-scc
+
+
+##### restricted-v2
+oc adm policy add-scc-to-user restricted-v2 -z default -n demo-scc
+oc auth can-i use scc/restricted-v2 --as=system:serviceaccount:demo-scc:default -n demo-scc
+
+oc create -f pod-default.yaml
+oc get pod pod-default -n demo-scc
+oc get pod pod-default -n demo-scc -o jsonpath='{.metadata.annotations.openshift\.io/scc}{"\n"}'
+
+oc create -f pod-anyuid.yaml
+oc get pod pod-anyuid -n demo-scc
+oc describe pod pod-anyuid -n demo-scc
+
+oc delete -f pod-default.yaml
+oc delete -f pod-anyuid.yaml
+oc adm policy remove-scc-from-user restricted-v2 -z default -n demo-scc
+
+
+##### nonroot-v2
+oc adm policy add-scc-to-user nonroot-v2 -z default -n demo-scc
+oc auth can-i use scc/nonroot-v2 --as=system:serviceaccount:demo-scc:default -n demo-scc
+
+oc create -f pod-anyuid.yaml
+oc get pod pod-anyuid -n demo-scc
+oc get pod pod-anyuid -n demo-scc -o jsonpath='{.metadata.annotations.openshift\.io/scc}{"\n"}'
+
+oc create -f pod-rootuid.yaml
+oc get pod pod-rootuid -n demo-scc
+oc describe pod pod-rootuid -n demo-scc
+
+oc delete -f pod-anyuid.yaml
+oc delete -f pod-rootuid.yaml
+oc adm policy remove-scc-from-user nonroot-v2 -z default -n demo-scc
+
+
+## anyuid
+oc adm policy add-scc-to-user anyuid -z default -n demo-scc
+oc auth can-i use scc/anyuid --as=system:serviceaccount:demo-scc:default -n demo-scc
+
+oc create -f pod-rootuid.yaml
+oc get pod pod-rootuid -n demo-scc
+oc get pod pod-rootuid -n demo-scc -o jsonpath='{.metadata.annotations.openshift\.io/scc}{"\n"}'
+
+oc create -f pod-hostpath.yaml
+oc get pod pod-hostpath -n demo-scc
+oc describe pod pod-hostpath -n demo-scc
+
+
+## privileged
+oc adm policy add-scc-to-user privileged -z default -n demo-scc
+oc auth can-i use scc/privileged --as=system:serviceaccount:demo-scc:default -n demo-scc
+
+oc create -f pod-privileged.yaml
+oc get pod pod-privileged -n demo-scc
+oc get pod pod-privileged -n demo-scc -o jsonpath='{.metadata.annotations.openshift\.io/scc}{"\n"}'
+
+oc create -f pod-hostpath.yaml
+oc get pod pod-hostpath -n demo-scc
+oc get pod pod-hostpath -n demo-scc -o jsonpath='{.metadata.annotations.openshift\.io/scc}{"\n"}'
+
+oc delete -f pod-privileged.yaml
+oc delete -f pod-hostpath.yaml
+oc adm policy remove-scc-from-user privileged -z default -n demo-scc
