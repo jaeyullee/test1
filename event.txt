@@ -1,0 +1,20 @@
+# my-pod이라는 이름의 파드에 관련된 이벤트 보기
+oc get events --field-selector involvedObject.name=my-pod
+
+# my-pod이라는 이름의 파드에서 "Failed" 상태의 이벤트 보기
+oc get events --field-selector involvedObject.name=my-pod,type=Warning
+
+# demo-scc 네임스페이스에서 Deployment 리소스와 관련된 이벤트 보기
+oc get events -n demo-scc --field-selector involvedObject.kind=Deployment
+
+# "Failed" Reason을 가진 모든 이벤트 보기
+oc get events --field-selector reason=Failed
+
+# "Pulled" Reason을 가진 모든 이벤트 보기 (이미지 풀 성공)
+oc get events --field-selector reason=Pulled
+
+# "Permission denied" 메시지를 포함하는 이벤트 찾기
+oc get events --all-namespaces | grep "Permission denied"
+
+# 이벤트 시간 순 정렬하여 보기
+oc get events --sort-by='lastTimestamp'
