@@ -1,0 +1,26 @@
+1. pod 생성
+# oc new-app -n demo-node-down docker.io/library/tomcat:latest --name tomcat-1
+# oc edit -n demo-node-down deploy/tomcat-1 
+```
+spec:
+  ...
+  template:
+    ...
+    spec:
+      tolerations:
+      - effect: NoExecute
+        key: node.kubernetes.io/not-ready
+        operator: Exists
+        tolerationSeconds: 60
+      - effect: NoExecute
+        key: node.kubernetes.io/unreachable
+        operator: Exists
+        tolerationSeconds: 60
+	  ...
+```
+	
+2. node에서 kubelet 중지
+# systemctl stop kubelet
+
+3. 노드 확인
+# oc get po -n demo-node-down -owide
