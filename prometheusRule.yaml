@@ -1,0 +1,16 @@
+kind: PrometheusRule
+metadata:
+  name: example-user
+  namespace: demo-monitoring
+spec:
+  groups:
+    - name: userexample.rules
+      rules:
+        - alert: exampleAlertUser
+          expr: vector(1)
+          for: 10s
+          labels:
+            severity: warning
+          annotations:
+            summary: "This is a test alert"
+            description: "Webhook 테스트용 알람이 발생했습니다."
