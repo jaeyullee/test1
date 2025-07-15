@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  config.yaml:
+    alertmanager:
+      enabled: true
+      enableAlertmanagerConfig: true
+kind: ConfigMap
+metadata:
+  name: user-workload-monitoring-config
+  namespace: openshift-user-workload-monitoring
