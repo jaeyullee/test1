@@ -1,0 +1,8 @@
+// cluster-admin 유저 로그인
+oc new-project demo-rbac
+// 일반 유저 추가 및 로그인
+oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-1
+// cluster-admin 유저 로그인
+oc adm policy add-role-to-user admin <username>
+// 일반 유저 로그인
+oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-1
