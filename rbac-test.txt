@@ -1,0 +1,35 @@
+oc login -u admin
+// 일반 유저 추가 : user1, user2
+oc new-project demo-rbac
+$ cat <<EOF > test-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: test-role
+  namespace: test-ns
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - pods
+    verbs:
+      - get
+      - watch
+      - list
+EOF
+oc create -f test-role.yaml
+
+oc login -u user1
+oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-1
+oc login -u user2
+oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-1
+
+oc login -u admin
+oc adm policy add-role-to-user admin user1 -n demo-rbac
+oc adm policy add-role-to-user test-role user2 --role-namespace=demo-rbac -n demo-rbac
+
+oc login -u user1
+oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-1
+oc login -u user2
+oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-1
+
