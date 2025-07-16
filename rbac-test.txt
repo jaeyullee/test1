@@ -16,6 +16,13 @@ rules:
       - get
       - watch
       - list
+  - apiGroups:
+      - ''
+    resources:
+      - namespaces
+    verbs:
+      - get
+      - list
 EOF
 oc create -f test-role.yaml
 
