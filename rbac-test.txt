@@ -22,7 +22,7 @@ oc create -f test-role.yaml
 oc login -u user1
 oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-1
 oc login -u user2
-oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-1
+oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-2
 
 oc login -u admin
 oc adm policy add-role-to-user admin user1 -n demo-rbac
@@ -30,6 +30,7 @@ oc adm policy add-role-to-user test-role user2 --role-namespace=demo-rbac -n dem
 
 oc login -u user1
 oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-1
+oc get pods
 oc login -u user2
-oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-1
-
+oc new-app -n demo-rbac docker.io/library/tomcat:latest --name tomcat-2
+oc get pods
